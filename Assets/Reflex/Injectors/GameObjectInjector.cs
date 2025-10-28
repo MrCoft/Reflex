@@ -144,6 +144,19 @@ namespace Reflex.Injectors
             });
             gameObjectScope.Container = childContainer;
             
+            using var pooledMonoBehaviours = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
+            gameObjectScope.GetComponents<MonoBehaviour>(monoBehaviours);
+            
+            for (var i = 0; i < monoBehaviours.Count; i++)
+            {
+                var monoBehaviour = monoBehaviours[i];
+
+                if (monoBehaviour != null)
+                {
+                    AttributeInjector.Inject(monoBehaviour, childContainer);
+                }
+            }
+            
             using var pooledObject = ListPool<GameObject>.Get(out var children);
             var childrenCount = gameObjectScope.transform.childCount;
             for (var i = 0; i < childrenCount; i++)
