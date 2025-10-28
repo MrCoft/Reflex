@@ -136,6 +136,19 @@ namespace Reflex.Injectors
         
         private static void InjectGameObjectScope(GameObjectScope gameObjectScope, Container container)
         {
+            using var pooledMonoBehaviours = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
+            gameObjectScope.GetComponents<MonoBehaviour>(monoBehaviours);
+            
+            for (var i = 0; i < monoBehaviours.Count; i++)
+            {
+                var monoBehaviour = monoBehaviours[i];
+
+                if (monoBehaviour != null && monoBehaviour is IInstaller)
+                {
+                    AttributeInjector.Inject(monoBehaviour, container);
+                }
+            }
+            
             var childContainer = container.Scope(builder =>
             {
                 builder.SetName($"{gameObjectScope.name} ({gameObjectScope.GetHashCode()})");
@@ -144,14 +157,11 @@ namespace Reflex.Injectors
             });
             gameObjectScope.Container = childContainer;
             
-            using var pooledMonoBehaviours = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
-            gameObjectScope.GetComponents<MonoBehaviour>(monoBehaviours);
-            
             for (var i = 0; i < monoBehaviours.Count; i++)
             {
                 var monoBehaviour = monoBehaviours[i];
 
-                if (monoBehaviour != null)
+                if (monoBehaviour != null && !(monoBehaviour is IInstaller))
                 {
                     AttributeInjector.Inject(monoBehaviour, childContainer);
                 }
