@@ -45,5 +45,13 @@ namespace Reflex.Editor
             Selection.activeObject = sceneScope.gameObject;
             EditorSceneManager.MarkSceneDirty(sceneScope.gameObject.scene);
         }
+        
+        [MenuItem("GameObject/Reflex/GameObjectScope")]
+        private static void CreateReflexGameObjectScope()
+        {
+            var gameObjectScope = new GameObject(nameof(GameObjectScope)).AddComponent<GameObjectScope>();
+            Selection.activeObject = gameObjectScope.gameObject;
+            EditorSceneManager.MarkSceneDirty(gameObjectScope.gameObject.scene);
+        }
     }
 }
