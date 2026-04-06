@@ -8,5 +8,6 @@ namespace Reflex.Resolvers
     {
         Lifetime Lifetime { get; }
         object Resolve(Container container);
+        void SetOwner(Container container) { }
     }
 }

@@ -9,6 +9,7 @@ namespace Reflex.Resolvers
     {
         private object _instance;
         private readonly Type _concreteType;
+        private Container _ownerContainer;
         private readonly DisposableCollection _disposables = new();
         public Lifetime Lifetime => Lifetime.Singleton;
 
@@ -18,13 +19,18 @@ namespace Reflex.Resolvers
             _concreteType = concreteType;
         }
 
+        public void SetOwner(Container container)
+        {
+            _ownerContainer = container;
+        }
+
         public object Resolve(Container container)
         {
             Diagnosis.IncrementResolutions(this);
 
             if (_instance == null)
             {
-                _instance = container.Construct(_concreteType);
+                _instance = (_ownerContainer ?? container).Construct(_concreteType);
                 _disposables.TryAdd(_instance);
                 Diagnosis.RegisterInstance(this, _instance);
             }
