@@ -95,7 +95,6 @@ namespace Reflex.Injectors
                     return;
                 }
                 
-                // todo - include inactive?
                 gameObject.GetComponents<MonoBehaviour>(monoBehaviours);
 
                 for (var i = 0; i < monoBehaviours.Count; i++)
@@ -120,7 +119,7 @@ namespace Reflex.Injectors
             }
             else
             {
-                gameObject.GetComponentsInChildren<MonoBehaviour>(monoBehaviours);
+                gameObject.GetComponentsInChildren<MonoBehaviour>(true, monoBehaviours);
 
                 for (var i = 0; i < monoBehaviours.Count; i++)
                 {
